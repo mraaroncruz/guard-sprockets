@@ -13,26 +13,27 @@ which will add this to your Guardfile
     end
 change the destination to your public facing javascript directory and the `watch` regex to point at where your source javascript file is.  
 The base configuration would work for a rails 3 project with a directory structure like  
-        |-- app
-        |   |-- controllers
-        |   |-- assets
-        |   |   |-- sass
-        |   |   `-- javascripts
-        |   |       `-- application.js # your source javascript file 
-        |   |-- helpers
-        |   |-- mailers
-        |   |-- models
-        |   `-- views
-        |       `-- layouts
-        |-- config
-        |   |-- environments
-        |   |-- initializers
-        |   `-- locales
-        |-- db
-        |-- doc
-        |-- lib
-        |   `-- tasks
-        ... etc.
+        
+    |-- app
+    |   |-- controllers
+    |   |-- assets
+    |   |   |-- sass
+    |   |   `-- javascripts
+    |   |       `-- application.js # your source javascript file 
+    |   |-- helpers
+    |   |-- mailers
+    |   |-- models
+    |   `-- views
+    |       `-- layouts
+    |-- config
+    |   |-- environments
+    |   |-- initializers
+    |   `-- locales
+    |-- db
+    |-- doc
+    |-- lib
+    |   `-- tasks
+    ... etc.
 
 ## TODO
 tests
