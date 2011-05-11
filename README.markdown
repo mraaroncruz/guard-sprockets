@@ -2,7 +2,7 @@
 Packages your javascript files together when you save your source file.
 
 ## Use
-if you haven't already `gem install guard`  
+if you haven't already `gem install sprockets`  
 then `gem install guard-sprockets`  
 in your project's directory root  
 `guard init`  
