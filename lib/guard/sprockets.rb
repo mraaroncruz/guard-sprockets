@@ -25,13 +25,13 @@ module Guard
     private
     
     def sprocketize(path)
-      parts = path.split('/')
-      file = parts.pop
-      parts.pop
-      @destination ||= parts.join('/')
+      parts        = path.split('/')
+      file         = parts.pop
+      source_dir   = "#{parts[0...-1].join('/')}/*"
+      destination  = parts[1..-1].join('/')
+      @destination ||= destination
       secretary = ::Sprockets::Secretary.new(
         :asset_root            => "#{parts.first}",
-        :load_path             => ["#{parts.join('/')}/src/*"],
         :source_files          => ["#{path}"],
         :interpolate_constants => false
       )
