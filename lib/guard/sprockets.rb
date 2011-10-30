@@ -6,14 +6,14 @@ require 'sprockets'
 module Guard
   class Sprockets < Guard
     def initialize(watchers=[], options={})
-      super 
+      super
       @destination = options[:destination]
     end
 
     def start
        UI.info "Sprockets waiting for js file changes..."
     end
-    
+
     def run_all
       true
     end
@@ -21,9 +21,9 @@ module Guard
     def run_on_change(paths)
       sprocketize paths.first
     end
-    
+
     private
-    
+
     def sprocketize(path)
       parts        = path.split('/')
       file         = parts.pop

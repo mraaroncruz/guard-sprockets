@@ -13,10 +13,10 @@ Gem::Specification.new do |s|
   s.description = %q{guard file for sprockets}
 
   s.rubyforge_project = "guard-sprockets"
-  
+
   s.add_dependency 'guard', '>= 0.2.2'
   s.add_dependency "sprockets"
-  
+
   s.files        = Dir.glob('{lib}/**/*') #+ %w[LICENSE README.rdoc]
   s.require_path = 'lib'
 end
