@@ -45,8 +45,8 @@ module Guard
       @sprockets_env.append_path changed.dirname
 
       output_basename = changed.basename.to_s
-      if m = output_basename.match(/^(.*\.(?:js|css))\.[^.]+$/)
-        output_basename = m[1]
+      if match = output_basename.match(/^(.*\.(?:js|css))\.[^.]+$/)
+        output_basename = match[1]
       end
 
       output_file = Pathname.new(File.join(@destination, output_basename))
