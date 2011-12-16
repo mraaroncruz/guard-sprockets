@@ -8,11 +8,24 @@ module Guard
   class Sprockets < Guard
     def initialize(watchers=[], options={})
       super 
-      @destination = options[:destination]
+      
+      # init Sprocket env for use later
+      @sprockets_env = ::Sprockets::Environment.new
+      
+      @asset_paths = options.delete(:asset_paths) || []
+      # add the asset_paths to the Sprockets env
+      @asset_paths.each do |p|
+        @sprockets_env.append_path p
+      end
+      # store the output destination
+      @destination = options.delete(:destination)
+      @opts = options
     end
 
     def start
-       UI.info "Sprockets waiting for js file changes..."
+       UI.info "Sprockets waiting for asset file changes..."
+       UI.info " -- external asset paths = [#{@asset_paths.inspect}]" unless @asset_paths.empty?
+       UI.info " -- destination path = [#{@destination.inspect}]"
     end
     
     def run_all
@@ -20,29 +33,28 @@ module Guard
     end
 
     def run_on_change(paths)
-      sprocketize paths.first
+      paths.each{ |js| sprocketize(js) }
+      true
     end
     
     private
     
     def sprocketize(path)
-      parts        = path.split('/')
-      file         = parts.pop
-      source_dir   = "#{parts[0...-1].join('/')}/*"
-      destination  = parts[1..-1].join('/')
-      @destination ||= destination
-      secretary = ::Sprockets::Secretary.new(
-        :asset_root            => "#{parts.first}",
-        :source_files          => ["#{path}"],
-        :interpolate_constants => false
-      )
-      # Generate a Sprockets::Concatenation object from the source files
-      concatenation = secretary.concatenation
-      # Write the concatenation to disk
-      concatenation.save_to("#{@destination}/#{file}")
-      # Install provided assets into the asset root
-      secretary.install_assets
-      UI.info "Sprockets creating file #{@destination}/#{file}"
+      changed = Pathname.new(path)
+
+      @sprockets_env.append_path changed.dirname
+
+      output_basename = changed.basename.to_s
+      if m = output_basename.match(/^(.*\.(?:js|css))\.[^.]+$/)
+        output_basename = m[1]
+      end
+
+      output_file = Pathname.new(File.join(@destination, output_basename))
+      UI.info "Sprockets creating file #{output_file}"
+      FileUtils.mkdir_p(output_file.parent) unless output_file.parent.exist?
+      output_file.open('w') do |f|
+        f.write @sprockets_env[output_basename]
+      end
     end
   end
 end
