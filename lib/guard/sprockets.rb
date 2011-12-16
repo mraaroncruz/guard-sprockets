@@ -1,5 +1,6 @@
 require 'guard'
 require 'guard/guard'
+require 'erb'
 
 require 'sprockets'
 
