@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name        = "guard-sprockets"
   s.version     = Guard::Sprockets::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Aaron Cruz"]
-  s.email       = ["aaron@aaroncruz.com"]
+  s.authors     = ["Aaron Cruz", 'Kematzy']
+  s.email       = ["aaron@aaroncruz.com", "kematzy at gmail"]
   s.homepage    = "http://aaroncruz.com"
   s.summary     = %q{guard file for sprockets}
   s.description = %q{guard file for sprockets}
