@@ -1,3 +1,3 @@
-guard 'sprockets', :destination => "public/js", :asset_paths => ['/path/2/external/assets/'] do
-  watch (%r{app/assets/js/app.js})
+guard 'sprockets', :destination => "public/javascripts", :asset_paths => ['/app/assets/javascripts'] do
+  watch (%r{app/assets/javascripts/application.js})
 end

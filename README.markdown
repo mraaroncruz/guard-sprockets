@@ -1,16 +1,19 @@
 ## What?
 Packages your javascript files together when you save your source file.
 
+## Sprockets support
+master branch supports Sprockets v ~> 2  
+sprockets_1 branch supports v < 2
+
 ## Use
-if you haven't already `gem install sprockets`  
-then `gem install guard-sprockets`  
+`gem install guard-sprockets`  
 in your project's directory root  
 `guard init`  
 `guard init sprockets`  
 
 which will add this to your Guardfile  
 
-    guard 'sprockets', :destination => "public/javascripts" do
+    guard 'sprockets', :destination => "public/javascripts", :asset_paths => ['/app/assets/javascripts'] do
       watch (%r{app/assets/javascripts/application.js})
     end
 
