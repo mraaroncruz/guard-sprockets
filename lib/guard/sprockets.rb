@@ -19,6 +19,8 @@ module Guard
       end
       # store the output destination
       @destination = options.delete(:destination)
+      # the only file that should be built
+      @root_file = options.delete(:root_file)
       @opts = options
     end
 
@@ -30,11 +32,16 @@ module Guard
     end
     
     def run_all
+      run_on_change([@root_file]) if @root_file
       true
     end
 
     def run_on_change(paths)
-      paths.each{ |js| sprocketize(js) }
+      if @root_file
+        sprocketize(@root_file)
+      else
+        paths.each{ |js| sprocketize(js) }
+      end
       true
     end
     
