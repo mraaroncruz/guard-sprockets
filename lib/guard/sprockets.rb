@@ -3,7 +3,6 @@ require 'guard/guard'
 require 'erb'
 
 require 'sprockets'
-
 module Guard
   class Sprockets < Guard
     def initialize(watchers=[], options={})
@@ -17,7 +16,7 @@ module Guard
       @asset_paths.each do |p|
         @sprockets_env.append_path p
       end
-      
+
       if options.delete(:minify)
         begin
           require 'uglifier'
