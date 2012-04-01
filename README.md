@@ -55,16 +55,8 @@ Please read [Guard doc](https://github.com/guard/guard#readme) for more informat
 :asset_paths => ['app/js', 'lib/js'] # asset_paths can be a String or an Array
 :minify      => true                 # minify the JavaScript files content using Uglifier, default: false
                                      # be sure to add: "gem 'uglifier'" in your Gemfile
-:root_file => 'app/js/app.js'        # if set, only this file will be compiled, default: nil
+:root_file   => 'app/js/app.js'      # if set, only this file will be compiled, default: nil
 ```
-
-which will add this to your Guardfile  
-
-    guard 'sprockets', :destination => "public/javascripts", :asset_paths => ['/app/assets/javascripts'] do
-      watch (%r{app/assets/javascripts/application.js})
-    end
-
-change the destination to your public facing javascript directory and the `watch` regex to point at where your source javascript file is.  
 
 ## License
 (The MIT License)
