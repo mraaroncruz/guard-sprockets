@@ -6,84 +6,85 @@ require 'execjs'
 
 module Guard
   class Sprockets < Guard
-    def initialize(watchers=[], options={})
-      super
+
+    attr_reader :asset_paths, :destination, :root_file, :sprockets
+
+    def initialize(watchers = [], options = {})
+      super(watchers, options)
+
+      @options     = options
+      @asset_paths = Array(@options[:asset_paths] || 'app/assets/javascripts')
+      @destination = @options[:destination] || 'public/javascripts'
+      @root_file   = @options[:root_file]
 
       @sprockets = ::Sprockets::Environment.new
+      @asset_paths.each { |p| @sprockets.append_path(p) }
+      @sprockets.append_path(@root_file) if @root_file
 
-      @asset_paths = options.delete(:asset_paths) || []
-      @asset_paths.each do |p|
-        @sprockets.append_path p
-      end
-
-      if options.delete(:minify)
+      if @options.delete(:minify)
         begin
           require 'uglifier'
-          @sprockets_env.js_compressor = ::Uglifier.new
-          UI.info "Sprockets will compress output (minify)."
-        rescue
-          UI.error "minify: Uglifier cannot be loaded. No compression will be used.\nPlease include 'uglifier' in your Gemfile.\n#{$!}"
+          @sprockets.js_compressor = ::Uglifier.new
+          UI.info 'Sprockets will compress output.'
+        rescue LoadError => ex
+          UI.error "minify: Uglifier cannot be loaded. No compression will be used.\nPlease include 'uglifier' in your Gemfile."
+          UI.debug ex.message
         end
       end
-      # store the output destination
-      @destination = options.delete(:destination)
-      @root_file   = options.delete(:root_file)
-
-      @opts = options
     end
 
     def start
-       UI.info "Sprockets activated."
-       UI.info "  - external asset paths = #{@asset_paths.inspect}" unless @asset_paths.empty?
-       UI.info "  - destination path = #{@destination.inspect}"
-       UI.info "Sprockets guard is ready and waiting for some file changes..."
+       UI.info 'Guard::Sprockets is ready and waiting for some file changes...'
+       UI.debug "Guard::Sprockets.asset_paths = #{@asset_paths.inspect}" unless @asset_paths.empty?
+       UI.debug "Guard::Sprockets.destination = #{@destination.inspect}"
 
        run_all
     end
 
     def run_all
-      run_on_change([ @root_file ]) if @root_file
-
-      true
+      run_on_change([@root_file]) if @root_file
     end
 
     def run_on_change(paths)
-      if @root_file
-        sprocketize(@root_file)
-      else
-        paths.each do |file|
-          sprocketize(file)
-        end
-      end
+      paths = [@root_file] if @root_file
 
-      true
+      success = true
+      paths.each do |file|
+        success &= sprocketize(file)
+      end
+      success
     end
 
     private
 
     def sprocketize(path)
-      changed = Pathname.new(path)
+      path = Pathname.new(path)
 
-      @sprockets.append_path changed.dirname
+      @sprockets.append_path(path.dirname) unless @sprockets.paths.include?(path.dirname)
 
-      output_basename = changed.basename.to_s
-      output_basename.gsub!(/^(.*\.(?:js|css))\.[^.]+$/, '\1')
+      output_filename = without_preprocessor_extension(path.basename.to_s)
+      output_path = Pathname.new(File.join(@destination, output_filename))
 
-      output_file = Pathname.new(File.join(@destination, output_basename))
+      UI.info "Sprockets will compile #{output_filename}"
 
-      UI.info "Sprockets: compiling #{output_file}"
-
-      FileUtils.mkdir_p(output_file.parent) unless output_file.parent.exist?
-      output_file.open('w') do |f|
-        f.write @sprockets[output_basename]
+      FileUtils.mkdir_p(output_path.parent) unless output_path.parent.exist?
+      output_path.open('w') do |f|
+        f.write @sprockets[output_filename]
       end
 
-      UI.info "Sprockets finished compiling #{output_file}"
-      Notifier.notify "Compiled #{output_basename}"
-    rescue ExecJS::ProgramError => e
-      UI.error "Sprockets failed to compile #{output_file}"
-      UI.error e.message
-      Notifier.notify "Syntax error in #{output_basename}: #{e.message}", :priority => 2, :image => :failed
+      UI.info "Sprockets compiled #{output_filename}"
+      Notifier.notify "Sprockets compiled #{output_filename}"
+    rescue ExecJS::ProgramError => ex
+      UI.error "Sprockets failed compiling #{output_filename}"
+      UI.error ex.message
+      Notifier.notify "Sprockets failed compiling #{output_filename}!", :priority => 2, :image => :failed
+
+      false
     end
+
+    def without_preprocessor_extension(filename)
+      filename.gsub(/^(.*\.(?:js|css))\.[^.]+$/, '\1')
+    end
+
   end
 end
