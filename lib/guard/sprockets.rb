@@ -19,7 +19,7 @@ module Guard
       if options.delete(:minify)
         begin
           require 'uglifier'
-          @sprockets_env.js_compressor = ::Uglifier.new
+          @sprockets.js_compressor = ::Uglifier.new
           UI.info "Sprockets will compress output (minify)."
         rescue
           UI.error "minify: Uglifier cannot be loaded. No compression will be used.\nPlease include 'uglifier' in your Gemfile.\n#{$!}"
