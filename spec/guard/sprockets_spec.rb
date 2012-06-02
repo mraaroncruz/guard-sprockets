@@ -37,7 +37,7 @@ describe Guard::Sprockets do
     end
     after { FileUtils.rm_r('public') }
 
-    it { subject.run_on_change(['foo']).should be_false }
+    it { subject.run_on_changes(['foo']).should be_false }
   end
 
 end

@@ -45,7 +45,7 @@ module Guard
       run_on_change([@root_file]) if @root_file
     end
 
-    def run_on_change(paths)
+    def run_on_changes(paths)
       paths = [@root_file] if @root_file
 
       success = true
