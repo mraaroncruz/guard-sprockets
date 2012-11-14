@@ -56,6 +56,7 @@ Please read [Guard doc](https://github.com/guard/guard#readme) for more informat
 :minify      => true                 # minify the JavaScript files content using Uglifier, default: false
                                      # be sure to add: "gem 'uglifier'" in your Gemfile
 :root_file   => 'app/js/app.js'      # if set, only this file will be compiled, default: nil
+:root_file   => ['one.js', 'two.js'] # root_file can be a String or an Array
 ```
 
 ## License

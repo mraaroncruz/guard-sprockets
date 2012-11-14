@@ -15,11 +15,11 @@ module Guard
       @options     = options
       @asset_paths = Array(@options[:asset_paths] || 'app/assets/javascripts')
       @destination = @options[:destination] || 'public/javascripts'
-      @root_file   = @options[:root_file]
+      @root_file   = Array(@options[:root_file]) if @options[:root_file]
 
       @sprockets = ::Sprockets::Environment.new
       @asset_paths.each { |p| @sprockets.append_path(p) }
-      @sprockets.append_path(@root_file) if @root_file
+      @root_file.each{|f| @sprockets.append_path(Pathname.new(f).dirname) } if @root_file
 
       if @options.delete(:minify)
         begin
@@ -42,11 +42,11 @@ module Guard
     end
 
     def run_all
-      run_on_change([@root_file]) if @root_file
+      run_on_changes []
     end
 
     def run_on_changes(paths)
-      paths = [@root_file] if @root_file
+      paths = @root_file if @root_file
 
       success = true
       paths.each do |file|
@@ -59,8 +59,6 @@ module Guard
 
     def sprocketize(path)
       path = Pathname.new(path)
-
-      @sprockets.append_path(path.dirname) unless @sprockets.paths.include?(path.dirname)
 
       output_filename = without_preprocessor_extension(path.basename.to_s)
       output_path = Pathname.new(File.join(@destination, output_filename))
@@ -85,6 +83,5 @@ module Guard
     def without_preprocessor_extension(filename)
       filename.gsub(/^(.*\.(?:js|css))\.[^.]+$/, '\1')
     end
-
   end
 end
