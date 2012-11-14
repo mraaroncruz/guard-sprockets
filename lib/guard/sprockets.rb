@@ -15,11 +15,11 @@ module Guard
       @options     = options
       @asset_paths = Array(@options[:asset_paths] || 'app/assets/javascripts')
       @destination = @options[:destination] || 'public/javascripts'
-      @root_file   = Array(@options[:root_file]) if @options[:root_file]
+      @root_file   = Array(@options[:root_file])
 
       @sprockets = ::Sprockets::Environment.new
       @asset_paths.each { |p| @sprockets.append_path(p) }
-      @root_file.each{|f| @sprockets.append_path(Pathname.new(f).dirname) } if @root_file
+      @root_file.each { |f| @sprockets.append_path(Pathname.new(f).dirname) }
 
       if @options.delete(:minify)
         begin
@@ -46,7 +46,7 @@ module Guard
     end
 
     def run_on_changes(paths)
-      paths = @root_file if @root_file
+      paths = @root_file unless @root_file.empty?
 
       success = true
       paths.each do |file|
