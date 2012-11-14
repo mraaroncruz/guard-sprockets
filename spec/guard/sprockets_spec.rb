@@ -22,7 +22,8 @@ describe Guard::Sprockets do
 
       describe 'root_file' do
         it { described_class.new.root_file.should be_nil }
-        it { described_class.new([], :root_file => 'foo/bar').root_file.should eq 'foo/bar' }
+        it { described_class.new([], :root_file => 'foo/bar').root_file.should eq ['foo/bar'] }
+        it { described_class.new([], :root_file => %w(a b c)).root_file.should eq %w(a b c) }
       end
     end
   end
