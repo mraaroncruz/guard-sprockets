@@ -32,6 +32,10 @@ describe Guard::Sprockets do
     it { subject.send(:without_preprocessor_extension, 'foo.js.coffee').should eq 'foo.js' }
   end
 
+  describe 'with ERB' do
+    it { subject.send(:without_preprocessor_extension, 'foo.js.coffee.erb').should eq 'foo.js' }
+  end
+
   describe 'run_on_change' do
     before do
       subject.sprockets.should_receive(:[]).and_raise ExecJS::ProgramError
