@@ -21,10 +21,10 @@ module Guard
       @asset_paths.each { |p| @sprockets.append_path(p) }
       @root_file.each { |f| @sprockets.append_path(Pathname.new(f).dirname) }
 
-      if @options.delete(:minify)
+      if @options[:minify]
         begin
           require 'uglifier'
-          @sprockets.js_compressor = ::Uglifier.new
+          @sprockets.js_compressor = ::Uglifier.new(@options[:minify].is_a?(Hash) ? @options[:minify] : {})
           UI.info 'Sprockets will compress output.'
         rescue LoadError => ex
           UI.error "minify: Uglifier cannot be loaded. No compression will be used.\nPlease include 'uglifier' in your Gemfile."
