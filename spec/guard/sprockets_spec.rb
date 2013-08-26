@@ -17,7 +17,9 @@ describe Guard::Sprockets do
 
       describe 'minify' do
         it { described_class.new.sprockets.js_compressor.should be_nil }
+        it { described_class.new([], :minify => false).sprockets.js_compressor.should be_nil }
         it { described_class.new([], :minify => true).sprockets.js_compressor.should_not be_nil }
+        it { described_class.new([], :minify => { :mangle => false }).sprockets.js_compressor.should_not be_nil }
       end
 
       describe 'root_file' do
